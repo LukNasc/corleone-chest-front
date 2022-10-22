@@ -6,6 +6,7 @@ import LogsController from "../../controllers/Logs";
 import MembersController from "../../controllers/Members";
 import DateUtils from "../../utils/DateUtils";
 import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
+import TableSkeleton from "../../components/Skeleton/TableSkeleton";
 
 
 const headers = ["Item", "Ação", "Quantidade", "Membro", "Data", "Hora"]
@@ -21,21 +22,23 @@ function Log() {
     const [groupByMember, setGroupByMember] = useState("nobody");
     const [groupByDate, setGroupByDate] = useState(DateUtils.parseDateToString({ date: new Date(), format: "us" }));
 
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         Promise.all([LogsController.list(), MembersController.list()]).then(([logs, members]) => {
             setLogs(logs);
             setMembers(members)
+            setIsLoading(false);
         })
     }, []);
 
+
     const fetchLogs = async () => {
+        setIsLoading(true);
         const data = await LogsController.list();
         setLogs(data);
+        setIsLoading(false);
     }
-
-    const toggleLoading = () => setIsLoading(state => !state)
 
     const onChangeFilter = ({ target: { value } }) => {
         setTextFilter(value);
@@ -64,7 +67,7 @@ function Log() {
 
     const handlePressButton = async () => {
         try {
-            toggleLoading();
+            setIsLoading(true);
 
             const formatedDate = DateUtils.parseDateToString({ date: new Date(groupByDate) });
             const aggregate = await LogsController.listAggregate(groupByMember._id, formatedDate);
@@ -80,7 +83,7 @@ function Log() {
         } catch (e) {
             console.error(e);
         } finally {
-            toggleLoading()
+            setIsLoading(false);
         }
     };
 
@@ -105,6 +108,9 @@ function Log() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
+                    {isLoading && (
+                        <TableSkeleton rows={5} columns={7} />
+                    )}
                     {(logs).length === 0 && !isLoading && (
                         <TableRow>
                             <TableCell colSpan={7} style={{ textAlign: "center" }}>
