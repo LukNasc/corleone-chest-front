@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 
 import { Table, TableCell, TableRow, TableHead, TableBody, TextField, Box, MenuItem, Typography, Button, Avatar, TablePagination } from "@mui/material";
 
+
 import LogsController from "../../controllers/Logs";
 import MembersController from "../../controllers/Members";
 import DateUtils from "../../utils/DateUtils";
-import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
+import { ArrowDownward, ArrowUpward, ReplayOutlined } from "@mui/icons-material";
 import TableSkeleton from "../../components/Skeleton/TableSkeleton";
 
 
@@ -27,13 +28,15 @@ function Log() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    useEffect(() => {
+    useEffect(() => callServices(), []);
+
+    const callServices = () => {
         Promise.all([LogsController.list(), MembersController.list()]).then(([logs, members]) => {
             setLogs(logs);
             setMembers(members)
             setIsLoading(false);
         })
-    }, []);
+    }
 
 
     const fetchLogs = async () => {
@@ -102,7 +105,7 @@ function Log() {
     }
 
     const getAssetName = (item) => {
-        if(item.includes("Token")) return "tokenpt"
+        if (item.includes("Token")) return "tokenpt"
         return item.replace("-", "")
             .replace(/[çÇ]/g, "C")
             .replace(/[íÍ]/g, "I")
@@ -117,6 +120,7 @@ function Log() {
     return (
         <Box display="flex" flexDirection="column" justifyContent="flex-end">
             <Box display="flex" justifyContent="space-between" marginBottom={5} padding={1} borderRadius={2}>
+                <Button endIcon={<ReplayOutlined />} onClick={callServices}>Recarregar</Button>
                 <TextField placeholder="Buscar" onChange={onChangeFilter} value={textFilter} color="secondary" />
                 <TextField value={groupByMember} defaultValue="nobody" onChange={onChangeGroupByMember} select label="Agrupar por membro">
                     <MenuItem value="nobody">Nenhum</MenuItem>
