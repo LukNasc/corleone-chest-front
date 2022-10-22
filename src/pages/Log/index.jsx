@@ -147,6 +147,8 @@ function Log() {
             </Table>
             <TablePagination
                 rowsPerPage={rowsPerPage}
+                labelRowsPerPage={"Linhas por página"}
+                labelDisplayedRows={({count, from, page, to}) => `${from}-${to} de ${count}` }
                 component="div"
                 count={filter.length > 0 ? filter.length : logs.length}
                 rowsPerPageOptions={[5, 10, 15]}
