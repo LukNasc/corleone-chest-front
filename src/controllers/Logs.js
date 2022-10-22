@@ -10,10 +10,10 @@ const LogsController = {
             return Promise.reject(e.message);
         }
     },
-    async listAggregate(id, date) {
-        if (!date) date = new Date().toLocaleDateString("pt-Br");
+    async listAggregate(member_id, date) {
+
         try {
-            const { data } = await Api.get(`/log/list/${date.replaceAll("/", "-")}/${id}`);
+            const { data } = await Api.post(`/log/listAggregate`, { date, member_id });
 
             return data;
         } catch (e) {

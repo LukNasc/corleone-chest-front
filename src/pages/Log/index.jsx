@@ -20,7 +20,7 @@ function Log() {
     const [textFilter, setTextFilter] = useState("");
 
     const [groupByMember, setGroupByMember] = useState("nobody");
-    const [groupByDate, setGroupByDate] = useState(DateUtils.parseDateToString({ date: new Date(), format: "us" }));
+    const [groupByDate, setGroupByDate] = useState();
 
     const [isLoading, setIsLoading] = useState(true)
 
@@ -64,22 +64,22 @@ function Log() {
         setFilter([]);
         setTextFilter("");
         setGroupByMember("nobody");
-        setGroupByDate(DateUtils.parseDateToString({ date: new Date(), format: "us" }))
+        setGroupByDate("")
     }
 
 
-    const handlePressButton = async () => {
+    const onCallLogsAggregate = async ({ date, member }) => {
         try {
             setIsLoading(true);
 
-            const formatedDate = DateUtils.parseDateToString({ date: new Date(groupByDate) });
-            const aggregate = await LogsController.listAggregate(groupByMember._id, formatedDate);
+
+            const formatedDate = DateUtils.parseDateToString({ date: new Date(date) });
+            const aggregate = await LogsController.listAggregate(member._id, date && formatedDate);
 
             const formatedLog = [];
-
             let index = 0;
-            for (const { member, _id: { item, action }, ammount, hours } of aggregate.logs) {
-                formatedLog.push({ _id: index, member, item, ammount, action, date: aggregate.date.replaceAll("-", "/"), hours })
+            for (const { _id: { item, action }, member, ammount, hours, date } of aggregate) {
+                formatedLog.push({ _id: index, member, item, ammount, action, hours, date })
                 index++;
             }
             return setLogs(formatedLog);
@@ -90,6 +90,19 @@ function Log() {
         }
     };
 
+    const onChangeGroupByMember = ({ target: { value: member } }) => {
+        setGroupByMember(member);
+        onCallLogsAggregate({ member, date: groupByDate });
+    }
+
+    const onChangeGroupByDate = ({ target: { value: date } }) => {
+        setGroupByDate(date);
+        const member = groupByMember === "nobody" ? "" : groupByMember
+        onCallLogsAggregate({ date, member });
+    }
+
+
+
     const paginate = (array, pageSize, pageNumber) => array.slice((pageNumber) * pageSize, (pageNumber + 1) * pageSize);
 
 
@@ -97,13 +110,12 @@ function Log() {
         <Box display="flex" flexDirection="column" justifyContent="flex-end">
             <Box display="flex" justifyContent="space-between" marginBottom={5} padding={1} borderRadius={2}>
                 <TextField placeholder="Buscar" onChange={onChangeFilter} value={textFilter} color="secondary" />
-                <TextField value={groupByMember} defaultValue="nobody" onChange={({ target: { value } }) => setGroupByMember(value)} select label="Agrupar por membro">
+                <TextField value={groupByMember} defaultValue="nobody" onChange={onChangeGroupByMember} select label="Agrupar por membro">
                     <MenuItem value="nobody">Nenhum</MenuItem>
                     {members.map((member) => <MenuItem key={member.passaport} value={member} >{member.name} || {member.passaport}</MenuItem>)}
                 </TextField>
-                <TextField type="date" onChange={({ target: { value } }) => setGroupByDate(value)} value={groupByDate} color="secondary" />
-                <Button onClick={handlePressButton} disabled={groupByMember === "nobody"}>Filtrar</Button>
-                <Button onClick={handleClearFilters} disabled={groupByMember === "nobody" && !groupByDate && !textFilter}>Limpar</Button>
+                <TextField type="date" onChange={onChangeGroupByDate} value={groupByDate} color="secondary" />
+                <Button onClick={handleClearFilters} >Limpar</Button>
             </Box>
             <Table size="small" >
                 <TableHead>
@@ -148,7 +160,7 @@ function Log() {
             <TablePagination
                 rowsPerPage={rowsPerPage}
                 labelRowsPerPage={"Linhas por página"}
-                labelDisplayedRows={({count, from, page, to}) => `${from}-${to} de ${count}` }
+                labelDisplayedRows={({ count, from, to }) => `${from}-${to} de ${count}`}
                 component="div"
                 count={filter.length > 0 ? filter.length : logs.length}
                 rowsPerPageOptions={[5, 10, 15]}
