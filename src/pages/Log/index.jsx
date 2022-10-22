@@ -38,14 +38,6 @@ function Log() {
         })
     }
 
-
-    const fetchLogs = async () => {
-        setIsLoading(true);
-        const data = await LogsController.list();
-        setLogs(data);
-        setIsLoading(false);
-    }
-
     const onChangeFilter = ({ target: { value } }) => {
         setTextFilter(value);
         if (value === "") setFilter([]);
@@ -63,7 +55,6 @@ function Log() {
     }
 
     const handleClearFilters = () => {
-        fetchLogs()
         setFilter([]);
         setTextFilter("");
         setGroupByMember("nobody");
@@ -120,14 +111,16 @@ function Log() {
     return (
         <Box display="flex" flexDirection="column" justifyContent="flex-end">
             <Box display="flex" justifyContent="space-between" marginBottom={5} padding={1} borderRadius={2}>
-                <Button endIcon={<ReplayOutlined />} onClick={callServices}>Recarregar</Button>
+                <Button endIcon={<ReplayOutlined />} onClick={() => {
+                    handleClearFilters();
+                    callServices();
+                }}>Recarregar</Button>
                 <TextField placeholder="Buscar" onChange={onChangeFilter} value={textFilter} color="secondary" />
                 <TextField value={groupByMember} defaultValue="nobody" onChange={onChangeGroupByMember} select label="Agrupar por membro">
                     <MenuItem value="nobody">Nenhum</MenuItem>
                     {members.map((member) => <MenuItem key={member.passaport} value={member} >{member.name} || {member.passaport}</MenuItem>)}
                 </TextField>
                 <TextField type="date" onChange={onChangeGroupByDate} value={groupByDate} color="secondary" />
-                <Button onClick={handleClearFilters} >Limpar</Button>
             </Box>
             <Table size="small" >
                 <TableHead>
@@ -155,8 +148,8 @@ function Log() {
                                     {item}
                                 </Box>
                             </TableCell>
-                            <TableCell>{action}</TableCell>
-                            <TableCell>{ammount}</TableCell>
+                            <TableCell style={{ color: action === "Retirou" ? "#a00" : "#0a0" }}><b>{action}</b></TableCell>
+                            <TableCell style={{ color: action === "Retirou" ? "#a00" : "#0a0" }}><b>{ammount}</b></TableCell>
                             <TableCell>{name} || {passaport}</TableCell>
                             <TableCell>{date}</TableCell>
                             <TableCell>{hours}</TableCell>

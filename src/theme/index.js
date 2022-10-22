@@ -7,7 +7,7 @@ const theme = createTheme({
     palette,
     components,
     typography: {
-        fontFamily: "EB Garamond, serif"
+        fontFamily: "Propmpt, sans-serif"
     }
 })
 
