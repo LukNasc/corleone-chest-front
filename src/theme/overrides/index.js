@@ -4,13 +4,15 @@ import MuiOutlinedInput from "./components/MuiOutlinedInput";
 
 import MuiTableCell from "./components/MuiTableCell";
 import MuiTableHead from "./components/MuiTableHead";
+import MuiTablePagination from "./components/MuiTablePagination";
 
 const components = {
     MuiTextField,
     MuiInput,
     MuiOutlinedInput,
     MuiTableCell,
-    MuiTableHead
+    MuiTableHead,
+    MuiTablePagination
 }
 
 export default components;

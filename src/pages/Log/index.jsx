@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Table, TableCell, TableRow, TableHead, TableBody, TextField, Box, MenuItem, Typography, Button, Avatar } from "@mui/material";
+import { Table, TableCell, TableRow, TableHead, TableBody, TextField, Box, MenuItem, Typography, Button, Avatar, TablePagination } from "@mui/material";
 
 import LogsController from "../../controllers/Logs";
 import MembersController from "../../controllers/Members";
@@ -23,6 +23,9 @@ function Log() {
     const [groupByDate, setGroupByDate] = useState(DateUtils.parseDateToString({ date: new Date(), format: "us" }));
 
     const [isLoading, setIsLoading] = useState(true)
+
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     useEffect(() => {
         Promise.all([LogsController.list(), MembersController.list()]).then(([logs, members]) => {
@@ -87,9 +90,11 @@ function Log() {
         }
     };
 
+    const paginate = (array, pageSize, pageNumber) => array.slice((pageNumber) * pageSize, (pageNumber + 1) * pageSize);
+
 
     return (
-        <>
+        <Box display="flex" flexDirection="column" justifyContent="flex-end">
             <Box display="flex" justifyContent="space-between" marginBottom={5} padding={1} borderRadius={2}>
                 <TextField placeholder="Buscar" onChange={onChangeFilter} value={textFilter} color="secondary" />
                 <TextField value={groupByMember} defaultValue="nobody" onChange={({ target: { value } }) => setGroupByMember(value)} select label="Agrupar por membro">
@@ -118,7 +123,7 @@ function Log() {
                             </TableCell>
                         </TableRow>
                     )}
-                    {(filter.length > 0 ? filter : logs).map(({ member: { name, passaport }, _id, item, ammount, date, action, hours }) => (
+                    {paginate(filter.length > 0 ? filter : logs, rowsPerPage, page).map(({ member: { name, passaport }, _id, item, ammount, date, action, hours }) => (
                         <TableRow key={_id} hover>
                             <TableCell>
                                 <Box display="flex" gap="20px" alignItems="center">
@@ -140,7 +145,16 @@ function Log() {
                     ))}
                 </TableBody>
             </Table>
-        </>
+            <TablePagination
+                rowsPerPage={rowsPerPage}
+                component="div"
+                count={filter.length > 0 ? filter.length : logs.length}
+                rowsPerPageOptions={[5, 10, 15]}
+                onRowsPerPageChange={({ target: { value } }) => setRowsPerPage(value)}
+                onPageChange={(e, newPage) => setPage(newPage)}
+                page={page}
+            />
+        </Box>
     )
 }
 
