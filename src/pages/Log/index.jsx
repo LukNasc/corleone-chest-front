@@ -101,7 +101,15 @@ function Log() {
         onCallLogsAggregate({ date, member });
     }
 
-
+    const getAssetName = (item) => {
+        if(item.includes("Token")) return "tokenpt"
+        return item.replace("-", "")
+            .replace(/[çÇ]/g, "C")
+            .replace(/[íÍ]/g, "I")
+            .replace(/[ÀÁÂÃÄÅàáâãäå]/g, "A")
+            .replace(/[ÈÉÊËéèê]/g, "E")
+            .replace(/\s/g, '').toLowerCase().trim()
+    };
 
     const paginate = (array, pageSize, pageNumber) => array.slice((pageNumber) * pageSize, (pageNumber + 1) * pageSize);
 
@@ -139,7 +147,7 @@ function Log() {
                         <TableRow key={_id} hover>
                             <TableCell>
                                 <Box display="flex" gap="20px" alignItems="center">
-                                    <Avatar src={`/img/materials/${item.toLowerCase()}.png`} />
+                                    <Avatar src={`/img/materials/${getAssetName(item)}.png`} />
                                     {item}
                                 </Box>
                             </TableCell>
