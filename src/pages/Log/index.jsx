@@ -128,7 +128,7 @@ function Log() {
                     {isLoading && (
                         <TableSkeleton rows={5} columns={7} />
                     )}
-                    {(logs).length === 0 && !isLoading && (
+                    {(logs).length === 0 && filter.length === 0 && !isLoading && (
                         <TableRow>
                             <TableCell colSpan={7} style={{ textAlign: "center" }}>
                                 <Typography variant="h5">Não há nada para exibir</Typography>
