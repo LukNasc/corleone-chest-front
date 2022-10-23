@@ -96,7 +96,7 @@ function Log() {
     }
 
     const getAssetName = (item) => {
-        if (item.includes("Token")) return "tokenpt"
+        if (item.includes("Token")) return "token_azul"
         return item.replace("-", "")
             .replace(/[çÇ]/g, "C")
             .replace(/[íÍ]/g, "I")
