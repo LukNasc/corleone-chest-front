@@ -120,8 +120,7 @@ function Log() {
                     callServices();
                 }}>Recarregar</Button>
             </Box>
-            <iframe width="1280" height="720" src="https://rr3---sn-gpv7dne6.c.drive.google.com/videoplayback?expire=1666584438&ei=NtdVY9DLI_SdlAPFzJ2QAQ&ip=2804:29b8:512a:102:a170:5ffb:5ad0:9fc0&cp=QVRLWEZfU1RRSVhPOm93M1JhS2hOa2ZqTmhDWDctM2JqdFFtVVJUUGdSSUJ3R2p2bnp3aDJvVlU&id=31b35ecbd5df728a&itag=22&source=webdrive&requiressl=yes&mh=Pf&mm=32&mn=sn-gpv7dne6&ms=su&mv=m&mvi=3&pl=48&ttl=transient&susc=dr&driveid=1Zj_Ha37RZ6BzoLfDt2axcRD-rFxfFpQS&app=explorer&mime=video/mp4&vprv=1&prv=1&dur=174.335&lmt=1666419323280832&mt=1666569645&subapp=DRIVE_WEB_FILE_VIEWER&txp=0011224&sparams=expire,ei,ip,cp,id,itag,source,requiressl,ttl,susc,driveid,app,mime,vprv,prv,dur,lmt&sig=AOq0QJ8wRQIhANK0ZbFlVqgwz_UMOjifc7BDIO5YY4kzbZ2o1bqQkGwxAiBjDFjuQCTQXUtIJvTgApuwleHdHwdozESJJOch4vsB7g==&lsparams=mh,mm,mn,ms,mv,mvi,pl&lsig=AG3C_xAwRQIhAMJmkDVfuSgJ89a0-cGYVSkwNmqdGwKK5VK-_76H5fxHAiBsJMxjfg3FqnV97SPGvfVkGLGnDEckiN0d2VO4NP4P_A==&cpn=6k9YjSFM-8sOm1Cm&c=WEB_EMBEDDED_PLAYER&cver=1.20221018.01.00" title="Perdi o Controle do Meu Show!" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            <Box display="flex" marginBottom={5} padding={1} borderRadius={2}>
+             <Box display="flex" marginBottom={5} padding={1} borderRadius={2}>
                 <TextField value={groupByMember} defaultValue="nobody" onChange={onChangeGroupByMember} select label="Agrupar por membro" style={{ marginRight: 10 }}>
                     <MenuItem value="nobody">Nenhum</MenuItem>
                     {members.map((member) => <MenuItem key={member.passaport} value={member} >{member.name} || {member.passaport}</MenuItem>)}
