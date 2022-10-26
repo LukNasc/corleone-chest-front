@@ -5,7 +5,6 @@ import { ArrowDownward, ArrowUpward, ReplayOutlined } from "@mui/icons-material"
 
 import LogsController from "../../controllers/Logs";
 import MembersController from "../../controllers/Members";
-import DateUtils from "../../utils/DateUtils";
 import TableSkeleton from "../../components/Skeleton/TableSkeleton";
 import DateRangePicker from "../../components/DateRangePicker";
 
@@ -21,9 +20,7 @@ function Log() {
     const [textFilter, setTextFilter] = useState("");
 
     const [groupByMember, setGroupByMember] = useState("nobody");
-    const [groupByDate, setGroupByDate] = useState();
-    const [dateInit, setDateInit] = useState();
-    const [dateEnd, setDateEnd] = useState();
+    const [groupByDates, setGroupByDates] = useState();
 
     const [isLoading, setIsLoading] = useState(true)
 
@@ -61,17 +58,16 @@ function Log() {
         setFilter([]);
         setTextFilter("");
         setGroupByMember("nobody");
-        setGroupByDate("")
+        setGroupByDates("")
     }
 
 
-    const onCallLogsAggregate = async ({ date, member }) => {
+    const onCallLogsAggregate = async ({ dates, member }) => {
         try {
             setIsLoading(true);
 
 
-            const formatedDate = DateUtils.parseDateToString({ date: new Date(date) });
-            const aggregate = await LogsController.listAggregate(member._id, date && formatedDate);
+            const aggregate = await LogsController.listAggregate(member._id, dates);
 
             const formatedLog = [];
             let index = 0;
@@ -89,13 +85,13 @@ function Log() {
 
     const onChangeGroupByMember = ({ target: { value: member } }) => {
         setGroupByMember(member);
-        onCallLogsAggregate({ member, date: groupByDate });
+        onCallLogsAggregate({ member, date: groupByDates });
     }
 
-    const onChangeGroupByDate = ({ target: { value: date } }) => {
-        setGroupByDate(date);
+    const onChangeGroupByDates = (dates) => {
+        setGroupByDates(dates);
         const member = groupByMember === "nobody" ? "" : groupByMember
-        onCallLogsAggregate({ date, member });
+        onCallLogsAggregate({ dates, member });
     }
 
     const getAssetName = (item) => {
@@ -120,12 +116,12 @@ function Log() {
                     callServices();
                 }}>Recarregar</Button>
             </Box>
-             <Box display="flex" marginBottom={5} padding={1} borderRadius={2}>
-                <TextField value={groupByMember} defaultValue="nobody" onChange={onChangeGroupByMember} select label="Agrupar por membro" style={{ marginRight: 10 }}>
+            <Box display="flex" marginBottom={5} padding={1} borderRadius={2}>
+                {/* <TextField value={groupByMember} defaultValue="nobody" onChange={onChangeGroupByMember} select label="Agrupar por membro" style={{ marginRight: 10 }}>
                     <MenuItem value="nobody">Nenhum</MenuItem>
                     {members.map((member) => <MenuItem key={member.passaport} value={member} >{member.name} || {member.passaport}</MenuItem>)}
-                </TextField>
-                <DateRangePicker onChange={(dates) => console.log(dates)} />
+                </TextField> */}
+                <DateRangePicker onChange={onChangeGroupByDates} />
             </Box>
 
             <Table size="small" >

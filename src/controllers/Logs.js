@@ -10,10 +10,10 @@ const LogsController = {
             return Promise.reject(e.message);
         }
     },
-    async listAggregate(member_id, date) {
-
+    async listAggregate(member_id, dates) {
+        console.log(dates)
         try {
-            const { data } = await Api.post(`/log/listAggregate`, { date, member_id });
+            const { data } = await Api.post(`/log/listAggregate`, { dates, member_id });
 
             return data;
         } catch (e) {
