@@ -51,7 +51,7 @@ function Log() {
 
         value = value.toUpperCase();
 
-        const logsFiltered = logs.filter(({ member: { name, passaport }, action, item }) =>
+        const logsFiltered = (filter.length > 0 ? filter : logs).filter(({ member: { name, passaport }, action, item }) =>
             String(passaport).includes(value) ||
             String(name).toUpperCase().includes(value) ||
             String(action).toUpperCase().includes(value) ||
@@ -64,6 +64,7 @@ function Log() {
     const handleClearFilters = () => {
         setFilter([]);
         setTextFilter("");
+        setFilterRotationItems("all")
         setGroupByMember("nobody");
         setGroupByDates("")
     }
@@ -93,7 +94,7 @@ function Log() {
     const onChangeFilterByRotationsItems = ({ target: { value } }) => {
         setFilterRotationItems(value);
         if (value === "all") { setFilter([]); return; }
-        const filteredLogs = logs.filter(({ item }) => rotation_items.includes(item.toLowerCase()))
+        const filteredLogs = (filter.length > 0 ? filter : logs).filter(({ item }) => rotation_items.includes(item.toLowerCase()))
         console.log(filteredLogs)
         setFilter(filteredLogs)
     }
@@ -113,7 +114,7 @@ function Log() {
             <Box display="flex" justifyContent="space-between" padding={1} borderRadius={2}>
                 <Box display="flex" gap={2}>
                     <TextField placeholder="Buscar" onChange={onChangeFilter} value={textFilter} color="secondary" />
-                    <TextField value={filterRotationItems} defaultValue="all" onChange={onChangeFilterByRotationsItems} select label="Filtrar por item" style={{ marginRight: 10 }}>
+                    <TextField value={filterRotationItems} defaultValue="all" onChange={onChangeFilterByRotationsItems} select label="Filtrar por materiais da rotação" style={{ marginRight: 10 }}>
                         <MenuItem value="all">Todos</MenuItem>
                         <MenuItem value="rotation">Apenas materiais da rotação</MenuItem>
                     </TextField>
