@@ -4,7 +4,6 @@ import { Table, TableCell, TableRow, TableHead, TableBody, TextField, Box, MenuI
 import { ArrowDownward, ArrowUpward, ReplayOutlined } from "@mui/icons-material";
 
 import LogsController from "../../../controllers/Logs";
-import MembersController from "../../../controllers/Members";
 import TableSkeleton from "../../../components/Skeleton/TableSkeleton";
 import DateRangePicker from "../../../components/DateRangePicker";
 
@@ -18,16 +17,14 @@ const rotation_items = ["cobre", "alumínio", "titânio", "borracha", "plástico
 function Log() {
 
     const [logs, setLogs] = useState([]);
-    const [members, setMembers] = useState([]);
 
     const [filter, setFilter] = useState([]);
     const [textFilter, setTextFilter] = useState("");
 
     const [groupByMember, setGroupByMember] = useState("nobody");
-    const [groupByDates, setGroupByDates] = useState();
+    const [_, setGroupByDates] = useState();
     const [filterRotationItems, setFilterRotationItems] = useState("all");
 
-    const [showItems, setShowItems] = useState("all");
 
     const [isLoading, setIsLoading] = useState(true)
 
@@ -38,16 +35,18 @@ function Log() {
 
     const callServices = () => {
         setIsLoading(true);
-        Promise.all([LogsController.list(), MembersController.list()]).then(([logs, members]) => {
+        Promise.all([LogsController.list()]).then(([logs]) => {
             setLogs(logs);
-            setMembers(members)
             setIsLoading(false);
         })
     }
 
     const onChangeFilter = ({ target: { value } }) => {
         setTextFilter(value);
-        if (value === "") setFilter([]);
+        if (value === "") {
+            setFilter([]);
+            return;
+        };
 
         value = value.toUpperCase();
 
@@ -95,7 +94,6 @@ function Log() {
         setFilterRotationItems(value);
         if (value === "all") { setFilter([]); return; }
         const filteredLogs = (filter.length > 0 ? filter : logs).filter(({ item }) => rotation_items.includes(item.toLowerCase()))
-        console.log(filteredLogs)
         setFilter(filteredLogs)
     }
 
