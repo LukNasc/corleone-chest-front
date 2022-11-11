@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom/client';
 
 import './index.css';
 
-import { Home, Log } from "./pages"
+import { Chest, Home, Log } from "./pages"
 
 import theme from "./theme"
 import reportWebVitals from './reportWebVitals';
@@ -14,8 +14,7 @@ import MainTemplate from './templates/MainTemplate';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 const router = createBrowserRouter([
-  { path: "/", element: <Log /> },
-  { path: "/dashboard", element: <Home /> }
+  { path: "/", element: <Home /> },
 ])
 
 root.render(

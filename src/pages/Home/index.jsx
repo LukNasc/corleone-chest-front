@@ -1,43 +1,55 @@
-import React, { useEffect, useState } from "react";
-import { MenuItem, TextField } from "@mui/material";
+import React from "react";
+import { Tabs, Tab, Box } from "@mui/material";
+import Log from "../tabs/Log";
+import Chest from "../tabs/Chest";
 
-import Api from "../../service/axios.config";
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
 
-import ItemList from "../../components/ItemList";
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box sx={{ p: 3 }}>
+                    {children}
+                </Box>
+            )}
+        </div>
+    );
+}
+
+function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
 
 function Home() {
-    const [members, setMembers] = useState([]);
-    const [filter, setFilter] = useState();
+    const [value, setValue] = React.useState(0);
 
-    const onHandleListUsers = async () => {
-        try {
-            const { data } = await Api.get("/members/list");
-            setMembers(data);
-        }
-        catch (e) {
-            console.error(e);
-        }
-    }
-
-    useEffect(() => {
-        onHandleListUsers();
-    }, [])
-
-    const handleChangeInputFilter = ({ target: { value: passaport } }) => {
-        if (passaport === 0) return setFilter();
-        const member = members.filter(item => item.passaport === passaport);
-        return setFilter(member);
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
     };
 
     return (
         <>
-            <TextField style={{ width: "200px" }} variant="filled" defaultValue={0} label="Filtro por membro" onChange={handleChangeInputFilter} value={filter} select>
-                <MenuItem value={0}>Todos</MenuItem>
-                {members.map(({ name, passaport }) => <MenuItem key={passaport} value={passaport}>{name}</MenuItem>)}
-            </TextField>
-            {(filter || members).map(({ name, passaport }) => (
-                <ItemList key={passaport} name={name} passaport={passaport} />
-            ))}
+            <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                <Tab label="Log do Baú" {...a11yProps(0)} />
+                <Tab label="Baú" {...a11yProps(1)} />
+                <Tab label="Gráfico de rotações" disabled {...a11yProps(2)} />
+            </Tabs>
+            <TabPanel value={value} index={0}>
+                <Log />
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+                <Chest />
+            </TabPanel>
         </>
     )
 }

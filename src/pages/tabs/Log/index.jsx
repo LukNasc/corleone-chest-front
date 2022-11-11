@@ -3,13 +3,17 @@ import React, { useEffect, useState } from "react";
 import { Table, TableCell, TableRow, TableHead, TableBody, TextField, Box, MenuItem, Typography, Button, Avatar, TablePagination } from "@mui/material";
 import { ArrowDownward, ArrowUpward, ReplayOutlined } from "@mui/icons-material";
 
-import LogsController from "../../controllers/Logs";
-import MembersController from "../../controllers/Members";
-import TableSkeleton from "../../components/Skeleton/TableSkeleton";
-import DateRangePicker from "../../components/DateRangePicker";
+import LogsController from "../../../controllers/Logs";
+import MembersController from "../../../controllers/Members";
+import TableSkeleton from "../../../components/Skeleton/TableSkeleton";
+import DateRangePicker from "../../../components/DateRangePicker";
+
+import { Assets } from "../../../utils/Assets";
 
 
 const headers = ["Item", "Ação", "Quantidade", "Membro", "Data", "Hora"]
+
+const rotation_items = ["cobre", "alumínio", "titânio", "borracha", "plástico"]
 
 function Log() {
 
@@ -21,6 +25,9 @@ function Log() {
 
     const [groupByMember, setGroupByMember] = useState("nobody");
     const [groupByDates, setGroupByDates] = useState();
+    const [filterRotationItems, setFilterRotationItems] = useState("all");
+
+    const [showItems, setShowItems] = useState("all");
 
     const [isLoading, setIsLoading] = useState(true)
 
@@ -83,9 +90,12 @@ function Log() {
         }
     };
 
-    const onChangeGroupByMember = ({ target: { value: member } }) => {
-        setGroupByMember(member);
-        onCallLogsAggregate({ member, date: groupByDates });
+    const onChangeFilterByRotationsItems = ({ target: { value } }) => {
+        setFilterRotationItems(value);
+        if (value === "all") { setFilter([]); return; }
+        const filteredLogs = logs.filter(({ item }) => rotation_items.includes(item.toLowerCase()))
+        console.log(filteredLogs)
+        setFilter(filteredLogs)
     }
 
     const onChangeGroupByDates = (dates) => {
@@ -94,15 +104,6 @@ function Log() {
         onCallLogsAggregate({ dates, member });
     }
 
-    const getAssetName = (item) => {
-        if (item.includes("Token")) return "token_azul"
-        return item.replace("-", "")
-            .replace(/[çÇ]/g, "C")
-            .replace(/[íÍ]/g, "I")
-            .replace(/[ÀÁÂÃÄÅàáâãäå]/g, "A")
-            .replace(/[ÈÉÊËéèê]/g, "E")
-            .replace(/\s/g, '').toLowerCase().trim()
-    };
 
     const paginate = (array, pageSize, pageNumber) => array.slice((pageNumber) * pageSize, (pageNumber + 1) * pageSize);
 
@@ -110,7 +111,13 @@ function Log() {
     return (
         <Box display="flex" flexDirection="column" justifyContent="flex-end">
             <Box display="flex" justifyContent="space-between" padding={1} borderRadius={2}>
-                <TextField placeholder="Buscar" onChange={onChangeFilter} value={textFilter} color="secondary" />
+                <Box display="flex" gap={2}>
+                    <TextField placeholder="Buscar" onChange={onChangeFilter} value={textFilter} color="secondary" />
+                    <TextField value={filterRotationItems} defaultValue="all" onChange={onChangeFilterByRotationsItems} select label="Filtrar por item" style={{ marginRight: 10 }}>
+                        <MenuItem value="all">Todos</MenuItem>
+                        <MenuItem value="rotation">Apenas materiais da rotação</MenuItem>
+                    </TextField>
+                </Box>
                 <Button endIcon={<ReplayOutlined />} onClick={() => {
                     handleClearFilters();
                     callServices();
@@ -146,7 +153,7 @@ function Log() {
                         <TableRow key={_id} hover>
                             <TableCell>
                                 <Box display="flex" gap="20px" alignItems="center">
-                                    <Avatar src={`/img/materials/${getAssetName(item)}.png`} />
+                                    <Avatar src={`/img/materials/${Assets.getAssetName(item)}.png`} />
                                     {item}
                                 </Box>
                             </TableCell>
