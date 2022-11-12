@@ -32,12 +32,16 @@ function Chest() {
 
     const paginate = (array, pageSize, pageNumber) => array.slice((pageNumber) * pageSize, (pageNumber + 1) * pageSize);
 
-    const handleClearFilters = () => { }
+    const handleClearFilters = () => {
+        setFilter([]);
+        setTextFilter("");
+        setFilterRotationItems("all")
+    }
 
     const onChangeFilter = ({ target: { value } }) => {
         setTextFilter(value);
         if (value === "") {
-            setFilter([]); 
+            setFilter([]);
             return;
         };
 
