@@ -4,25 +4,29 @@ import ReactDOM from 'react-dom/client';
 
 import './index.css';
 
-import { Chest, Home, Log } from "./pages"
+import { Chest, Log } from "./pages"
 
 import theme from "./theme"
 import reportWebVitals from './reportWebVitals';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { BrowserRouter, createBrowserRouter, Route, Routes } from 'react-router-dom';
 import MainTemplate from './templates/MainTemplate';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 const router = createBrowserRouter([
-  { path: "/", element: <Home /> },
+  { path: "/", element: <Log /> },
+  { path: "/chest", element: <Chest /> }
 ])
 
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <MainTemplate>
-        <RouterProvider router={router} />
-      </MainTemplate>
+      <BrowserRouter >
+        <Routes>
+          <Route path="/" element={<MainTemplate children={<Log />} />} />
+          <Route path="/chest" element={<MainTemplate children={<Chest />} />} />
+        </Routes>
+      </BrowserRouter>
     </ThemeProvider>
   </React.StrictMode>
 );

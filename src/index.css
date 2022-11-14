@@ -1,9 +1,9 @@
 body {
   margin: 0;
-  font-family: 'Bebas Neue', cursive;
-  background-color: #323232;
+  font-family: Montserrat, cursive;
+  background-color: #363636;
   color: #fff;
-  padding: 10px;
+  overflow: hidden;
 }
 
 code {

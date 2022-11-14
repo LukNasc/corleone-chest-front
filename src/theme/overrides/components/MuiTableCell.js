@@ -1,15 +1,15 @@
 const MuiTableCell = {
     styleOverrides: {
         root: {
-            color: "#fff"
+            color: "#fff",
+            borderBottom:"1px solid #333333"
         },
         body: {
             fontSize: 16
         },
         head: {
             fontWeight: "bold",
-            fontSize: 21,
-            textTransform: "uppercase"
+            fontSize: 16,
         }
     }
 }

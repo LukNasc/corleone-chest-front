@@ -1,17 +1,19 @@
 import MuiTextField from "./components/MuiTextField"
 import MuiInput from "./components/MuiInput";
-import MuiOutlinedInput from "./components/MuiOutlinedInput";
+import MuiFilledInput from "./components/MuiFilledInput";
 
 import MuiTableCell from "./components/MuiTableCell";
 import MuiTableHead from "./components/MuiTableHead";
+import MuiTable from "./components/MuiTable";
 import MuiTablePagination from "./components/MuiTablePagination";
 
 const components = {
     MuiTextField,
     MuiInput,
-    MuiOutlinedInput,
+    MuiFilledInput,
     MuiTableCell,
     MuiTableHead,
+    MuiTable,
     MuiTablePagination
 }
 

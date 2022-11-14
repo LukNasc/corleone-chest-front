@@ -1,14 +1,11 @@
 import { createTheme } from "@mui/material/styles";
 
-import palette from "./palette"
 import components from "./overrides"
+import typography from "./typography"
 
 const theme = createTheme({
-    palette,
     components,
-    typography: {
-        fontFamily: "Propmpt, sans-serif"
-    }
+    typography
 })
 
 export default theme;

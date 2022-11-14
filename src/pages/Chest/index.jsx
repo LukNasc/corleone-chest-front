@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import { Table, TableCell, TableRow, TableHead, TableBody, Box, Typography, Avatar, TablePagination, Button, TextField, MenuItem } from "@mui/material";
 import { ReplayOutlined } from "@mui/icons-material";
 
-import TableSkeleton from "../../../components/Skeleton/TableSkeleton";
-import ChestController from "../../../controllers/Chest";
+import TableSkeleton from "../../components/Skeleton/TableSkeleton";
+import ChestController from "../../controllers/Chest";
 
-import { Assets } from "../../../utils/Assets";
+import { Assets } from "../../utils/Assets";
 
 const headers = ["Item", "Quantidade", "Ultima atualização"]
 

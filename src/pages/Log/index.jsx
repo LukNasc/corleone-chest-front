@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 
-import { Table, TableCell, TableRow, TableHead, TableBody, TextField, Box, MenuItem, Typography, Button, Avatar, TablePagination } from "@mui/material";
+import { Table, TableCell, TableRow, TableHead, TableBody, TextField, Box, MenuItem, Typography, Button, Avatar, TablePagination, Icon } from "@mui/material";
 import { ArrowDownward, ArrowUpward, ReplayOutlined } from "@mui/icons-material";
 
-import LogsController from "../../../controllers/Logs";
-import TableSkeleton from "../../../components/Skeleton/TableSkeleton";
-import DateRangePicker from "../../../components/DateRangePicker";
+import LogsController from "../../controllers/Logs";
+import TableSkeleton from "../../components/Skeleton/TableSkeleton";
+import DateRangePicker from "../../components/DateRangePicker";
 
-import { Assets } from "../../../utils/Assets";
+import { Assets } from "../../utils/Assets";
+import TitlePage from "../../components/TitlePage";
 
 
-const headers = ["Item", "Ação", "Quantidade", "Membro", "Data", "Hora"]
+const headers = ["Passaporte", "Nome", "Item", "Ação", "Quantidade", "Data/Hora"]
 
 const rotation_items = ["cobre", "alumínio", "titânio", "borracha", "plástico"]
 
@@ -109,32 +110,22 @@ function Log() {
 
     return (
         <Box display="flex" flexDirection="column" justifyContent="flex-end">
-            <Box display="flex" justifyContent="space-between" padding={1} borderRadius={2}>
-                <Box display="flex" gap={2}>
-                    <TextField placeholder="Buscar" onChange={onChangeFilter} value={textFilter} color="secondary" />
-                    <TextField value={filterRotationItems} defaultValue="all" onChange={onChangeFilterByRotationsItems} select label="Filtrar por materiais da rotação" style={{ marginRight: 10 }}>
-                        <MenuItem value="all">Todos</MenuItem>
-                        <MenuItem value="rotation">Apenas materiais da rotação</MenuItem>
-                    </TextField>
-                </Box>
-                <Button endIcon={<ReplayOutlined />} onClick={() => {
-                    handleClearFilters();
-                    callServices();
-                }}>Recarregar</Button>
+            <TitlePage title={"HISTÓRICO DE LOGS"} logo="history" />
+            <Box display="flex" justifyContent="space-between" marginBottom="15px">
+                <TextField
+                    variant="filled"
+                    placeholder="Buscar"
+                    style={{ width: 394 }}
+                    value={textFilter}
+                    onChange={onChangeFilter}
+                    InputProps={{
+                        disableUnderline: true, startAdornment: <Icon>search</Icon>
+                    }} />
             </Box>
-            <Box display="flex" marginBottom={5} padding={1} borderRadius={2}>
-                {/* <TextField value={groupByMember} defaultValue="nobody" onChange={onChangeGroupByMember} select label="Agrupar por membro" style={{ marginRight: 10 }}>
-                    <MenuItem value="nobody">Nenhum</MenuItem>
-                    {members.map((member) => <MenuItem key={member.passaport} value={member} >{member.name} || {member.passaport}</MenuItem>)}
-                </TextField> */}
-                <DateRangePicker onChange={onChangeGroupByDates} />
-            </Box>
-
             <Table size="small" >
                 <TableHead>
                     <TableRow>
                         {headers.map((head) => <TableCell key={head}>{head}</TableCell>)}
-                        <TableCell padding="checkbox" />
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -150,22 +141,17 @@ function Log() {
                     )}
                     {!isLoading && paginate(filter.length > 0 ? filter : logs, rowsPerPage, page).map(({ member: { name, passaport }, _id, item, ammount, date, action, hours }) => (
                         <TableRow key={_id} hover>
+                            <TableCell>{passaport}</TableCell>
+                            <TableCell>{name}</TableCell>
                             <TableCell>
                                 <Box display="flex" gap="20px" alignItems="center">
                                     <Avatar src={`/img/materials/${Assets.getAssetName(item)}.png`} />
                                     {item}
                                 </Box>
                             </TableCell>
-                            <TableCell style={{ color: action === "Retirou" ? "#a00" : "#0a0" }}><b>{action}</b></TableCell>
-                            <TableCell style={{ color: action === "Retirou" ? "#a00" : "#0a0" }}><b>{ammount}</b></TableCell>
-                            <TableCell>{name} || {passaport}</TableCell>
-                            <TableCell>{date}</TableCell>
-                            <TableCell>{hours}</TableCell>
-                            <TableCell padding="checkbox">
-                                <Box borderRadius={1} width="30px" height="30px" display="flex" justifyContent="center" alignItems="center" backgroundColor={action === "Retirou" ? "#A70B21" : "#090"}>
-                                    {action === "Retirou" ? <ArrowUpward /> : <ArrowDownward />}
-                                </Box>
-                            </TableCell>
+                            <TableCell style={{ color: action === "Retirou" ? "#a00" : "#0a0" }}>{action}</TableCell>
+                            <TableCell>{ammount}</TableCell>
+                            <TableCell>{date} {hours}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
