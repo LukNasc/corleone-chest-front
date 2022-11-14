@@ -1,5 +1,6 @@
 import React from 'react';
-import { Router } from 'react-router-dom';
+
+import { Alert } from '@mui/material';
 
 import Sidebar from "../components/Sidebar"
 
@@ -34,6 +35,8 @@ function MainTemplate({ children }) {
                 user: "Calan",
                 passaport: 1045
             }}>
+            <Alert severity="warning">Essa versão do sistema ainda está sendo desenvolvida, pode aconter alguns bugs e algumas funcionalidades ainda não estão presentes </Alert>
+            <br />
             {children}
         </Sidebar>
 
