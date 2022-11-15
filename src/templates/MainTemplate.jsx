@@ -35,7 +35,7 @@ function MainTemplate({ children }) {
                 user: "Calan",
                 passaport: 1045
             }}>
-            <Alert severity="warning">Essa versão do sistema ainda está sendo desenvolvida, pode aconter alguns bugs e algumas funcionalidades ainda não estão presentes </Alert>
+            <Alert severity="info">Essa versão do sistema ainda está sendo desenvolvida, pode aconter alguns bugs e algumas funcionalidades ainda não estão presentes </Alert>
             <br />
             {children}
         </Sidebar>
