@@ -7,6 +7,12 @@ import MuiTableHead from "./components/MuiTableHead";
 import MuiTable from "./components/MuiTable";
 import MuiTablePagination from "./components/MuiTablePagination";
 
+import MuiButton from "./components/MuiButton"
+
+import MuiDrawer from "./components/MuiDrawer"
+
+import MuiSelect from "./components/MuiSelect";
+
 const components = {
     MuiTextField,
     MuiInput,
@@ -14,7 +20,10 @@ const components = {
     MuiTableCell,
     MuiTableHead,
     MuiTable,
-    MuiTablePagination
+    MuiTablePagination,
+    MuiButton,
+    MuiDrawer,
+    MuiSelect
 }
 
 export default components;

@@ -1,31 +1,25 @@
 import React, { useEffect, useState } from "react";
 
-import { Table, TableCell, TableRow, TableHead, TableBody, TextField, Box, MenuItem, Typography, Button, Avatar, TablePagination, Icon } from "@mui/material";
-import { ArrowDownward, ArrowUpward, ReplayOutlined } from "@mui/icons-material";
-
+import { Table, TableCell, TableRow, TableHead, TableBody, TextField, Box, Typography, Button, Avatar, TablePagination, Icon } from "@mui/material";
 import LogsController from "../../controllers/Logs";
 import TableSkeleton from "../../components/Skeleton/TableSkeleton";
-import DateRangePicker from "../../components/DateRangePicker";
 
 import { Assets } from "../../utils/Assets";
 import TitlePage from "../../components/TitlePage";
+import LogsFilter from "./components/LogsFilter";
 
 
 const headers = ["Passaporte", "Nome", "Item", "Ação", "Quantidade", "Data/Hora"]
-
-const rotation_items = ["cobre", "alumínio", "titânio", "borracha", "plástico"]
 
 function Log() {
 
     const [logs, setLogs] = useState([]);
 
     const [filter, setFilter] = useState([]);
-    const [textFilter, setTextFilter] = useState("");
+    const [filters, setFilters] = useState({})
+    const [search, setSearch] = useState("");
 
-    const [groupByMember, setGroupByMember] = useState("nobody");
-    const [_, setGroupByDates] = useState();
-    const [filterRotationItems, setFilterRotationItems] = useState("all");
-
+    const [openFilter, setOpenFilter] = useState(false);
 
     const [isLoading, setIsLoading] = useState(true)
 
@@ -42,10 +36,10 @@ function Log() {
         })
     }
 
-    const onChangeFilter = ({ target: { value } }) => {
-        setTextFilter(value);
+    const onChangeSearch = ({ target: { value } }) => {
+        setSearch(value);
         if (value === "") {
-            setFilter([]);
+            handleFilter(filters);
             return;
         };
 
@@ -60,15 +54,6 @@ function Log() {
 
         return setFilter(logsFiltered);
     }
-
-    const handleClearFilters = () => {
-        setFilter([]);
-        setTextFilter("");
-        setFilterRotationItems("all")
-        setGroupByMember("nobody");
-        setGroupByDates("")
-    }
-
 
     const onCallLogsAggregate = async ({ dates, member }) => {
         try {
@@ -91,19 +76,34 @@ function Log() {
         }
     };
 
-    const onChangeFilterByRotationsItems = ({ target: { value } }) => {
-        setFilterRotationItems(value);
-        if (value === "all") { setFilter([]); return; }
-        const filteredLogs = (filter.length > 0 ? filter : logs).filter(({ item }) => rotation_items.includes(item.toLowerCase()))
-        setFilter(filteredLogs)
-    }
 
-    const onChangeGroupByDates = (dates) => {
-        setGroupByDates(dates);
-        const member = groupByMember === "nobody" ? "" : groupByMember
-        onCallLogsAggregate({ dates, member });
-    }
+    const toggleDrawer = (open) => (event) => {
+        if (
+            event &&
+            event.type === 'keydown' &&
+            (event.key === 'Tab' || event.key === 'Shift')
+        ) {
+            return;
+        }
+        setOpenFilter(open);
+    };
 
+    const handleFilter = (filters) => {
+        setSearch("");
+        setFilters(filters)
+        if (Object.keys(filters).length === 0) {
+            setFilter([]);
+            return;
+        }
+
+        let filteredList = logs;
+
+        if (filters.items) filteredList = filteredList.filter(log => filters.items.includes(log.item));
+        if (filters.action) filteredList = filteredList.filter(log => filters.action === log.action);
+        if (filters.member) filteredList = filteredList.filter(log => log.member.name === filters.member)
+
+        setFilter(filteredList)
+    }
 
     const paginate = (array, pageSize, pageNumber) => array.slice((pageNumber) * pageSize, (pageNumber + 1) * pageSize);
 
@@ -116,11 +116,12 @@ function Log() {
                     variant="filled"
                     placeholder="Buscar"
                     style={{ width: 394 }}
-                    value={textFilter}
-                    onChange={onChangeFilter}
+                    value={search}
+                    onChange={onChangeSearch}
                     InputProps={{
                         disableUnderline: true, startAdornment: <Icon>search</Icon>
                     }} />
+                <Button variant="text" color="secondary" onClick={toggleDrawer(true)} endIcon={<Icon>filter_list</Icon>}>Mais Filtros</Button>
             </Box>
             <Table size="small" >
                 <TableHead>
@@ -156,6 +157,9 @@ function Log() {
                     ))}
                 </TableBody>
             </Table>
+            <LogsFilter open={openFilter} onFilter={handleFilter} toggleDrawer={toggleDrawer}
+                onClose={toggleDrawer(false)}
+                onOpen={toggleDrawer(true)} />
             <TablePagination
                 rowsPerPage={rowsPerPage}
                 labelRowsPerPage={"Linhas por página"}
