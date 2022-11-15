@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 
-import { Table, TableCell, TableRow, TableHead, TableBody, Box, Typography, Avatar, TablePagination, Button, TextField, MenuItem } from "@mui/material";
+import { Table, TableCell, TableRow, TableHead, TableBody, Box, Typography, Avatar, TablePagination, Button, TextField, Icon } from "@mui/material";
 import { ReplayOutlined } from "@mui/icons-material";
 
 import TableSkeleton from "../../components/Skeleton/TableSkeleton";
 import ChestController from "../../controllers/Chest";
 
 import { Assets } from "../../utils/Assets";
+import TitlePage from "../../components/TitlePage";
 
 const headers = ["Item", "Quantidade", "Ultima atualização"]
 
@@ -16,14 +17,13 @@ function Chest() {
     const [chest, setChest] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
-    const [textFilter, setTextFilter] = useState("");
+    const [search, setSearch] = useState("");
 
     const [filter, setFilter] = useState([]);
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    const [filterRotationItems, setFilterRotationItems] = useState("all");
 
 
     useEffect(() => {
@@ -34,12 +34,11 @@ function Chest() {
 
     const handleClearFilters = () => {
         setFilter([]);
-        setTextFilter("");
-        setFilterRotationItems("all")
+        setSearch("");
     }
 
-    const onChangeFilter = ({ target: { value } }) => {
-        setTextFilter(value);
+    const onChangeSearch = ({ target: { value } }) => {
+        setSearch(value);
         if (value === "") {
             setFilter([]);
             return;
@@ -54,12 +53,6 @@ function Chest() {
         return setFilter(chestsFiltered);
     }
 
-    const onChangeFilterByRotationsItems = ({ target: { value } }) => {
-        setFilterRotationItems(value);
-        if (value === "all") { setFilter([]); return; }
-        const filteredChests = (filter.length > 0 ? filter : chest).filter(({ item }) => rotation_items.includes(item.toLowerCase()))
-        setFilter(filteredChests)
-    }
 
     const callServices = () => {
         setIsLoading(true);
@@ -71,18 +64,18 @@ function Chest() {
 
     return (
         <Box display="flex" flexDirection="column" justifyContent="flex-end">
-            <Box display="flex" justifyContent="space-between" marginBottom="20px" padding={1} borderRadius={2}>
-                <Box display="flex" gap={2}>
-                    <TextField placeholder="Buscar" onChange={onChangeFilter} value={textFilter} color="secondary" />
-                    <TextField value={filterRotationItems} defaultValue="all" onChange={onChangeFilterByRotationsItems} select label="Filtrar por materiais da rotação" style={{ marginRight: 10 }}>
-                        <MenuItem value="all">Todos</MenuItem>
-                        <MenuItem value="rotation">Apenas materiais da rotação</MenuItem>
-                    </TextField>
-                </Box>
-                <Button endIcon={<ReplayOutlined />} onClick={() => {
-                    handleClearFilters();
-                    callServices();
-                }}>Recarregar</Button>
+            <TitlePage title="ITEMS DO BAÚ" logo="view_in_ar"/>
+            <Box display="flex" justifyContent="space-between" marginBottom="15px">
+                <TextField
+                    variant="filled"
+                    placeholder="Buscar"
+                    style={{ width: 394 }}
+                    value={search}
+                    onChange={onChangeSearch}
+                    InputProps={{
+                        disableUnderline: true, startAdornment: <Icon>search</Icon>
+                    }} />
+                <Button variant="text" color="secondary" endIcon={<Icon>filter_list</Icon>}>Mais Filtros</Button>
             </Box>
             <Table size="small" >
                 <TableHead>
@@ -109,8 +102,8 @@ function Chest() {
                                     {item}
                                 </Box>
                             </TableCell>
-                            <TableCell><b>{currentAmmount}</b></TableCell>
-                            <TableCell ><b>{lastUpdate}</b></TableCell>
+                            <TableCell>{currentAmmount}</TableCell>
+                            <TableCell >{lastUpdate}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
