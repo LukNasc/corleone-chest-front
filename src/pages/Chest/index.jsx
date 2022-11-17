@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from "react";
 
 import { Table, TableCell, TableRow, TableHead, TableBody, Box, Typography, Avatar, TablePagination, Button, TextField, Icon } from "@mui/material";
-import { ReplayOutlined } from "@mui/icons-material";
 
 import TableSkeleton from "../../components/Skeleton/TableSkeleton";
 import ChestController from "../../controllers/Chest";
 
 import { Assets } from "../../utils/Assets";
 import TitlePage from "../../components/TitlePage";
+import ChestFilter from "./components/ChestFilter";
 
 const headers = ["Item", "Quantidade", "Ultima atualização"]
-
-const rotation_items = ["cobre", "alumínio", "titânio", "borracha", "plástico"]
 
 function Chest() {
     const [chest, setChest] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
     const [search, setSearch] = useState("");
+    const [filters, setFilters] = useState({});
+    const [openFilter, setOpenFilter] = useState(false);
 
     const [filter, setFilter] = useState([]);
 
@@ -32,15 +32,10 @@ function Chest() {
 
     const paginate = (array, pageSize, pageNumber) => array.slice((pageNumber) * pageSize, (pageNumber + 1) * pageSize);
 
-    const handleClearFilters = () => {
-        setFilter([]);
-        setSearch("");
-    }
-
     const onChangeSearch = ({ target: { value } }) => {
         setSearch(value);
         if (value === "") {
-            setFilter([]);
+            handleFilter(filters);
             return;
         };
 
@@ -62,9 +57,36 @@ function Chest() {
         })
     }
 
+
+    const toggleDrawer = (open) => (event) => {
+        if (
+            event &&
+            event.type === 'keydown' &&
+            (event.key === 'Tab' || event.key === 'Shift')
+        ) {
+            return;
+        }
+        setOpenFilter(open);
+    };
+
+    const handleFilter = (filters) => {
+        setSearch("");
+        setFilters(filters)
+        if (Object.keys(filters).length === 0) {
+            setFilter([]);
+            return;
+        }
+
+        let filteredList = chest;
+
+        if (filters.items) filteredList = filteredList.filter(log => filters.items.includes(log.item));
+
+        setFilter(filteredList)
+    }
+
     return (
         <Box display="flex" flexDirection="column" justifyContent="flex-end">
-            <TitlePage title="ITEMS DO BAÚ" logo="view_in_ar"/>
+            <TitlePage title="ITEMS DO BAÚ" logo="view_in_ar" />
             <Box display="flex" justifyContent="space-between" marginBottom="15px">
                 <TextField
                     variant="filled"
@@ -75,7 +97,7 @@ function Chest() {
                     InputProps={{
                         disableUnderline: true, startAdornment: <Icon>search</Icon>
                     }} />
-                <Button variant="text" color="secondary" endIcon={<Icon>filter_list</Icon>}>Mais Filtros</Button>
+                <Button onClick={toggleDrawer(true)} variant="text" color="secondary" endIcon={<Icon>filter_list</Icon>}>Mais Filtros</Button>
             </Box>
             <Table size="small" >
                 <TableHead>
@@ -119,6 +141,9 @@ function Chest() {
                 onPageChange={(e, newPage) => setPage(newPage)}
                 page={page}
             />
+            <ChestFilter open={openFilter} onFilter={handleFilter} toggleDrawer={toggleDrawer}
+                onClose={toggleDrawer(false)}
+                onOpen={toggleDrawer(true)} />
         </Box>
     )
 }
