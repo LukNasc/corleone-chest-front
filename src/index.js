@@ -1,22 +1,22 @@
 import { ThemeProvider } from '@mui/material/styles';
 import React from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
 
-import './index.css';
 
 import { Chest, Log } from "./pages"
+import './index.css';
+
+import * as Firebase from './intialize-firebase';
 
 import theme from "./theme"
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter, createBrowserRouter, Route, Routes } from 'react-router-dom';
+
 import MainTemplate from './templates/MainTemplate';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
-const router = createBrowserRouter([
-  { path: "/", element: <Log /> },
-  { path: "/chest", element: <Chest /> }
-])
+Firebase.initialize();
 
 root.render(
   <React.StrictMode>
