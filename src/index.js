@@ -7,16 +7,12 @@ import ReactDOM from 'react-dom/client';
 import { Chest, Log } from "./pages"
 import './index.css';
 
-import * as Firebase from './intialize-firebase';
-
 import theme from "./theme"
 import reportWebVitals from './reportWebVitals';
 
 import MainTemplate from './templates/MainTemplate';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-
-Firebase.initialize();
 
 root.render(
   <React.StrictMode>

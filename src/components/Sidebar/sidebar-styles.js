@@ -14,10 +14,11 @@ const useStyles = makeStyles((theme) => ({
         background: "#232323",
         paddingBottom: 44
     },
-    logo: { width: 100, height: 90, marginTop: 35, marginBottom: 15 },
+    logo: { width: 200, height: 92, marginTop: 35, marginBottom: 15 },
     menu: {
         background: "#333333",
         width: 350,
+        maxWidth: 350,
         height: "100vh",
         boxShadow: "1px 0px 30px #000"
     },

@@ -30,8 +30,8 @@ function MainTemplate({ children }) {
         <Sidebar
             pages={pages}
             dataSession={{
-                logo: "skull.png",
-                title: "Corleone",
+                logo: "logo.png",
+                title: "",
                 user: "Calan",
                 passaport: 1045
             }}>
