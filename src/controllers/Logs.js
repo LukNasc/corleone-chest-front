@@ -1,4 +1,4 @@
-import Api from "../service/axios.config";
+import Api from "../api/axios.config";
 
 const LogsController = {
     async list() {

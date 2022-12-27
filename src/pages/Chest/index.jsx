@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 
-import { Table, TableCell, TableRow, TableHead, TableBody, Box, Typography, Avatar, TablePagination, Button, TextField, Icon } from "@mui/material";
+import { Table, TableCell, TableRow, TableHead, TableBody, Box, Avatar, TablePagination, Button, TextField, Icon } from "@mui/material";
 
 import TableSkeleton from "../../components/Skeleton/TableSkeleton";
 import ChestController from "../../controllers/Chest";
 
 import { Assets } from "../../utils/Assets";
-import TitlePage from "../../components/TitlePage";
 import ChestFilter from "./components/ChestFilter";
+import { TableService } from "../../services/TableService";
+import EmptyState from "../../components/EmptyState";
 
 const headers = ["Item", "Quantidade", "Ultima atualização"]
 
@@ -29,8 +30,6 @@ function Chest() {
     useEffect(() => {
         callServices()
     }, [])
-
-    const paginate = (array, pageSize, pageNumber) => array.slice((pageNumber) * pageSize, (pageNumber + 1) * pageSize);
 
     const onChangeSearch = ({ target: { value } }) => {
         setSearch(value);
@@ -54,7 +53,7 @@ function Chest() {
         Promise.all([ChestController.list()]).then(([chest]) => {
             setChest(chest);
             setIsLoading(false);
-        })
+        }).finally(() => setIsLoading(false))
     }
 
 
@@ -86,7 +85,6 @@ function Chest() {
 
     return (
         <Box display="flex" flexDirection="column" justifyContent="flex-end">
-            <TitlePage title="ITEMS DO BAÚ" logo="view_in_ar" />
             <Box display="flex" justifyContent="space-between" marginBottom="15px">
                 <TextField
                     variant="filled"
@@ -107,16 +105,16 @@ function Chest() {
                 </TableHead>
                 <TableBody>
                     {isLoading && (
-                        <TableSkeleton rows={5} columns={7} />
+                        <TableSkeleton rows={5} columns={3} />
                     )}
                     {(chest).length === 0 && filter.length === 0 && !isLoading && (
                         <TableRow>
-                            <TableCell colSpan={7} style={{ textAlign: "center" }}>
-                                <Typography variant="h5">Não há nada para exibir</Typography>
+                            <TableCell colSpan={3} style={{ textAlign: "center" }}>
+                                <EmptyState />
                             </TableCell>
                         </TableRow>
                     )}
-                    {!isLoading && paginate(filter.length > 0 ? filter : chest, rowsPerPage, page).map(({ _id, item, currentAmmount, lastUpdate }) => (
+                    {!isLoading && TableService.paginate(filter.length > 0 ? filter : chest, rowsPerPage, page).map(({ _id, item, currentAmmount, lastUpdate }) => (
                         <TableRow key={_id} hover>
                             <TableCell>
                                 <Box display="flex" gap="20px" alignItems="center">

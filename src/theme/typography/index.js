@@ -9,8 +9,19 @@ export default {
         fontSize: 24,
         fontWeight: "bold"
     },
+    h5: {
+        fontSize: 22,
+        fontWeight: "bold"
+    },
+    h6: {
+        fontSize: 16,
+        fontWeight: "bold"
+    },
     body1: {
         fontSize: 14
+    },
+    body2: {
+        fontSize: 16
     },
     fontFamily: "Montserrat, sans-serif"
 }

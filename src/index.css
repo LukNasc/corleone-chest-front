@@ -1,9 +1,18 @@
+/* css */
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   font-family: Montserrat, cursive;
   background-color: #363636;
   color: #fff;
   overflow: hidden;
+}
+
+a {
+  text-decoration: none;
 }
 
 code {

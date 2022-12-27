@@ -44,7 +44,7 @@ function Sidebar({ children, pages = [], dataSession = {} }) {
             <Box className={styles.content}>
                 {children}
             </Box>
-        </Box>
+        </Box >
     )
 }
 

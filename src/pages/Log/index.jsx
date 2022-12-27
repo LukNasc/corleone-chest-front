@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 
-import { Table, TableCell, TableRow, TableHead, TableBody, TextField, Box, Typography, Button, Avatar, TablePagination, Icon } from "@mui/material";
+import { Table, TableCell, TableRow, TableHead, TableBody, TextField, Box, Button, Avatar, TablePagination, Icon } from "@mui/material";
 import LogsController from "../../controllers/Logs";
 import TableSkeleton from "../../components/Skeleton/TableSkeleton";
 
 import { Assets } from "../../utils/Assets";
-import TitlePage from "../../components/TitlePage";
 import LogsFilter from "./components/LogsFilter";
+import { TableService } from "../../services/TableService";
+import EmptyState from "../../components/EmptyState";
 
 
 const headers = ["Passaporte", "Nome", "Item", "Ação", "Quantidade", "Data/Hora"]
@@ -33,7 +34,7 @@ function Log() {
         Promise.all([LogsController.list()]).then(([logs]) => {
             setLogs(logs);
             setIsLoading(false);
-        })
+        }).finally(() => setIsLoading(false))
     }
 
     const onChangeSearch = ({ target: { value } }) => {
@@ -105,12 +106,10 @@ function Log() {
         setFilter(filteredList)
     }
 
-    const paginate = (array, pageSize, pageNumber) => array.slice((pageNumber) * pageSize, (pageNumber + 1) * pageSize);
 
 
     return (
         <Box display="flex" flexDirection="column" justifyContent="flex-end">
-            <TitlePage title={"HISTÓRICO DE LOGS"} logo="history" />
             <Box display="flex" justifyContent="space-between" marginBottom="15px">
                 <TextField
                     variant="filled"
@@ -131,16 +130,16 @@ function Log() {
                 </TableHead>
                 <TableBody>
                     {isLoading && (
-                        <TableSkeleton rows={5} columns={7} />
+                        <TableSkeleton rows={5} columns={6} />
                     )}
                     {(logs).length === 0 && filter.length === 0 && !isLoading && (
                         <TableRow>
-                            <TableCell colSpan={7} style={{ textAlign: "center" }}>
-                                <Typography variant="h5">Não há nada para exibir</Typography>
+                            <TableCell colSpan={6} style={{ textAlign: "center" }}>
+                                <EmptyState />
                             </TableCell>
                         </TableRow>
                     )}
-                    {!isLoading && paginate(filter.length > 0 ? filter : logs, rowsPerPage, page).map(({ member: { name, passaport }, _id, item, ammount, date, action, hours }) => (
+                    {!isLoading && TableService.paginate(filter.length > 0 ? filter : logs, rowsPerPage, page).map(({ member: { name, passaport }, _id, item, ammount, date, action, hours }) => (
                         <TableRow key={_id} hover>
                             <TableCell>{passaport}</TableCell>
                             <TableCell>{name}</TableCell>
