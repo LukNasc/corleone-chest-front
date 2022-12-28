@@ -25,9 +25,10 @@ export function usePost(endpoint, body, options) {
             setData(result.data);
         } catch (e) {
             setError(e);
+            return Promise.reject({ data, error, isFetching })
         } finally {
             setIsFetching(false);
-            return { data, error, isFetching };
+            return Promise.resolve({ data, error, isFetching });
         }
     }
 

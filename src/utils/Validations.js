@@ -1,3 +1,3 @@
-const Validations = {
-    onlyNumbers: (string) => string.repalce(/\D/g, "")
+export const Validations = {
+    onlyNumbers: (string) => string.replace(/\D/g, "")
 }
