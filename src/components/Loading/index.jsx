@@ -8,7 +8,7 @@ const ID_CONTAINER = "loading-container";
 function Component() {
     return (
         <Box zIndex={10} backgroundColor="rgba(0,0,0,0.9)" position="absolute" display="flex" flexDirection="column" gap="10px" justifyContent="center" alignItems="center" width="100%" height="100vh" left={0} top={0}>
-            <img src="/img/skull.png" alt="loading_skull" />
+            <img src="/img/logo_org.svg" alt="loading_skull" />
             <Typography variant="body1">Carregando...</Typography>
         </Box>)
 }

@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
+import { useNavigate } from 'react-router-dom';
 
 import { Alert, IconButton, Icon } from '@mui/material';
 
 import Sidebar from "../components/Sidebar"
 import TitlePage from '../components/TitlePage';
-import { useState } from 'react';
+import { Cookies } from '../utils/Cookies';
 
 const pages = [
     {
@@ -47,11 +49,20 @@ function ActionCloseAlert({ color, onClick }) {
 
 function SidebarTemplate({ children, titlePage, logoPage }) {
 
+    const navigate = useNavigate();
+
     const [alerSystemIsVisible, setAlertSystemIsVisible] = useState(true);
     const [alertAdminIsVisible, setAlertAdminIsVisible] = useState(true);
 
     const toggleSystemAlert = () => setAlertSystemIsVisible(state => !state);
     const toggleAdminAlert = () => setAlertAdminIsVisible(state => !state);
+
+    useEffect(() => {
+        const hasAuth = Cookies.getCookie("JWT_TOKEN");
+        if (!hasAuth) {
+            navigate("/")
+        }
+    }, [])
 
     return (
         <Sidebar
